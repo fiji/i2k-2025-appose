@@ -900,9 +900,7 @@ println("Loaded unseg script of length ${unsegScript.length()}")
 layout: default
 ---
 
-# Step 13: Add Shared Memory Image Utility Functions
-
-Add handy methods for working with images in shared memory:
+# Step 13: Add Shared Memory Utility Functions
 
 For copying an ImgLib2 `Img` to Appose `NDArray`:
 ```groovy
@@ -934,24 +932,94 @@ layout: default
 
 # Step 14: Execute Task 🚀
 
-Run the Python code via Appose:
+Invoke the Python code via an Appose task:
 
 ```groovy
 println("== STARTING PYTHON SERVICE ==")
 try (python = env.python()) {
     inputs = ["ndarray": imgToAppose(image)]
     task = python.task(unsegScript, inputs)
-        .listen(println)
+        .listen { if (it.message) println("[UNSEG] ${it.message}") }
         .waitFor()
 
     println("TASK FINISHED: ${task.status}")
+    if (task.error) println(task.error)
     nuclei = apposeToImg(task.outputs["nuclei"])
     cells = apposeToImg(task.outputs["cells"])
 }
 finally {
-    println("== SHUTTING DOWN ==")
+    println("== TERMINATING PYTHON SERVICE ==")
 }
 ```
+
+<v-click>
+
+**🎯 Checkpoint:** `git commit -m 'Call unseg code via Appose' Unseg_Fiji.groovy`
+
+</v-click>
+
+---
+layout: default
+---
+
+# Step 15: Fix Bugs! 🪲
+
+```
+TASK FINISHED: FAILED
+Traceback (most recent call last):
+  File "/home/curtis/.local/share/appose/unseg-fiji/.pixi/envs/default/lib/python3.9/site-packages/appose/python_worker.py", line 145, in _run
+    exec(compile(block, "<string>", mode="exec"), _globals, binding)
+  File "<string>", line 1644, in <module>
+AttributeError: 'Task' object has no attribute 'inputs'
+```
+
+<div class="grid grid-cols-2 gap-4">
+
+<div>
+
+<v-click>
+
+**💡 HINTS:**
+
+<div style="font-size: small">
+
+- Task inputs are available as variables directly, not `task.inputs`
+- The Groovy script passes a var named `ndarray`, not `image`
+- Use `appose.NDArray.ndarray()` to obtain a `numpy.ndarray`
+- To transform input &amp; output images, these functions are needed ➡️
+
+</div>
+
+</v-click>
+
+</div>
+<div>
+
+<v-click>
+
+```python
+def flip_img(img):
+    """Flips a NumPy array between Java (F_ORDER) and NumPy-friendly (C_ORDER)"""
+    return np.transpose(img, tuple(reversed(range(img.ndim))))
+
+def share_as_ndarray(img):
+    """Copies a NumPy array into a same-sized newly allocated block of shared memory"""
+    from appose import NDArray
+    shared = NDArray(str(img.dtype), img.shape)
+    shared.ndarray()[:] = img
+    return shared
+```
+
+</v-click>
+
+</div>
+</div>
+
+<v-click>
+
+**🎯 Checkpoint:** `git commit -m 'Fix Appose-related bugs in Python code' unseg.py`
+
+</v-click>
 
 ---
 layout: default
