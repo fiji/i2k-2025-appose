@@ -139,10 +139,12 @@ This repository is configured to automatically deploy to GitHub Pages via GitHub
 
 The slides will be available at: `https://[username].github.io/[repo-name]/`
 
-To enable GitHub Pages:
+**Important:** To enable GitHub Pages deployment:
 1. Go to repository Settings > Pages
-2. Set Source to "GitHub Actions"
+2. Set **Build and deployment** source to "**GitHub Actions**" (not "Deploy from a branch")
 3. Push to main branch - deployment happens automatically
+
+For detailed setup instructions and troubleshooting, see [GITHUB_PAGES_SETUP.md](GITHUB_PAGES_SETUP.md)
 
 ### Manual Deployment
 
