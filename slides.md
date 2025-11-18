@@ -23,11 +23,16 @@ Curtis Rueden @ UW-Madison LOCI
 "Halfway to I2K" 2025
 
 <div class="pt-12">
-  <span @click="$slidev.nav.next" class="px-2 py-1 rounded cursor-pointer" hover="bg-white bg-opacity-10">
-    Press Space to begin <carbon:arrow-right class="inline"/>
+  <span @click="$slidev.nav.next" class="px-2 py-1 rounded cursor-pointer" hover="bg-white bg-opacity-10" style="font-size: 2em">
+    Press <kbd style="font-size: 1em">Space</kbd> to begin <carbon:arrow-right class="inline"/>
   </span>
 </div>
 
+<div class="pt-12 text-sm opacity-75">
+
+**SLIDES:** `https://fiji.github.io/i2k-2025-appose/`
+
+</div>
 ---
 layout: default
 ---
@@ -1087,8 +1092,4 @@ Thank you for participating! 🙏
 <div>Appose: https://github.com/apposed/appose</div>
 <div>UNSEG Reference: https://github.com/ctrueden/unseg-fiji</div>
 <div>Forum: https://forum.image.sc</div>
-</div>
-
-<div class="pt-12 text-sm opacity-75">
-Slides available at: [add your URL here]
 </div>
