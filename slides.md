@@ -1036,11 +1036,10 @@ layout: default
 
 <v-clicks>
 
-- **Environment build fails** → Check pixi.toml syntax, verify channels
+- **Environment build fails** → Test build on command line; use `logDebug` function
+- **Service won't start** or **Tasks won't run** → Use `Service#debug` function
 - **Python script errors** → Test standalone first with `pixi run python unseg.py`
 - **Input/output types** → Verify Appose can serialize your data types
-- **Memory issues** → Use shared memory for large images
-- **Service won't start** → Check pixi installation, try `logDebug()` mode
 
 </v-clicks>
 <v-click>
