@@ -53,6 +53,56 @@ layout: default
 layout: default
 ---
 
+# What Appose is NOT
+
+## Appose ≠ Fiji's Python Mode
+
+**Python Mode:** Runs Python in the *same process* as Java
+- Powered by PyImageJ (imglyb, scyjava, jgo, jpype) and enabled by Jaunch
+
+<div class="grid grid-cols-2 gap-4 mt-4">
+
+<div>
+
+<v-click>
+
+### Pros ✅
+- Memory can be shared directly
+- Java objects wrapped as Python objects via JPype
+- Write true Python (CPython, not Jython) scripts in Fiji's Script Editor
+
+</v-click>
+
+</div>
+<div>
+
+<v-click>
+
+### Cons ❌
+- Fiji can only run in Python mode with **one environment at a time**
+- No switching between deep learning tools with incompatible dependencies
+- All tools must share the same Python environment
+
+</v-click>
+
+</div>
+</div>
+
+<v-click>
+
+<div style="margin-top: -1em">
+
+### Appose solves this!
+Multiple isolated environments, each with their own dependencies, running simultaneously.
+
+</div>
+
+</v-click>
+
+---
+layout: default
+---
+
 # Interprocess
 
 Multiple **processes** (programs) connected via communication protocol
@@ -90,7 +140,33 @@ layout: default
 
 # Cooperation
 
-How Appose facilitates interprocess cooperation:
+How Appose facilitates<br>interprocess cooperation:
+
+<div class="absolute top-10 right-10" style="width: 40rem;">
+
+```mermaid
+graph TD
+    Env[Environment] -->|contains| S1[Service/Worker 1]
+    Env -->|contains| S2[Service/Worker 2]
+    Env -->|contains| S3[Service/Worker ...]
+    S1 -->|executes| T1[Task 1]
+    S1 -->|executes| T2[Task 2]
+    S1 -->|executes| T3[Task ...]
+    S2 -->|executes| T4[Task 1]
+    S2 -->|executes| T5[Task 2]
+
+    style Env fill:#4a9eff,stroke:#333,stroke-width:3px,color:#fff
+    style S1 fill:#6bc95f,stroke:#333,stroke-width:2px,color:#fff
+    style S2 fill:#6bc95f,stroke:#333,stroke-width:2px,color:#fff
+    style S3 fill:#6bc95f,stroke:#333,stroke-width:2px,color:#fff
+    style T1 fill:#ffa726,stroke:#333,stroke-width:1px,color:#fff
+    style T2 fill:#ffa726,stroke:#333,stroke-width:1px,color:#fff
+    style T3 fill:#ffa726,stroke:#333,stroke-width:1px,color:#fff
+    style T4 fill:#ffa726,stroke:#333,stroke-width:1px,color:#fff
+    style T5 fill:#ffa726,stroke:#333,stroke-width:1px,color:#fff
+```
+
+</div>
 
 <div class="grid grid-cols-2 gap-4">
 
@@ -98,23 +174,30 @@ How Appose facilitates interprocess cooperation:
 
 <v-click>
 
+<br>
+
 1. **Build Environment**
    - Using pixi, uv, or micromamba
    - No pre-installation needed
    - Everything downloaded on demand
 
 </v-click>
-
-</div>
-<div>
-
 <v-click>
+
+<br>
 
 2. **Start Service**
    - Worker process running in that environment
    - Stays alive for multiple tasks
 
 </v-click>
+<v-click>
+
+</v-click>
+
+</div>
+<div style="margin-top: 5rem">
+
 <v-click>
 
 3. **Run Tasks**
@@ -172,13 +255,13 @@ layout: default
 
 # N-dimensional Arrays
 
-Shared memory blocks with structural metadata&mdash;i.e. **images**!
+Shared memory with structural metadata (**images**!)
 
 `NDArray` = `SharedMemory` + dtype + shape
 
-<div class="relative mt-4">
+<div class="absolute top-10 right-10" style="z-index: 1">
 
-<div v-click="[1,2]" class="absolute">
+<v-click>
 
 ## Python: NumPy-compatible
 
@@ -192,28 +275,44 @@ data = appose.NDArray("uint16", [2, 20, 25])
 numpy_array = data.ndarray()
 ```
 
+</v-click>
+<v-click>
+
+**🤔 How does that work under the hood?**
+```python
+numpy.ndarray(
+    prod(data.shape), dtype=data.dtype, buffer=data.shm.buf
+).reshape(data.shape)
+```
+</v-click>
+
 </div>
 
-<div v-click="2" class="absolute">
+<v-click>
+
+<div style="margin-top: 1.5rem">
 
 ## Java: ImgLib2-compatible
 
 ```java
-import net.imglib2.appose.*;
 import org.apposed.appose.NDArray;
+import net.imglib2.appose.*; // ShmImg, NDArrays
 
-// Receive NDArray from Python (via task inputs)
+// Receive NDArray from Python (via task.outputs)
 ShmImg<FloatType> img = new ShmImg<>(ndarray);
 
-// Or create and send to Python
+// Or create and send to Python (as a task input)
 NDArray ndarray = NDArrays.ndArray(new FloatType(), 4, 3, 2);
 Img<FloatType> img = NDArrays.asArrayImg(ndarray, new FloatType());
+
+// Or copy to ShmImg from existing (presumably non-shm) Img
 Img<FloatType> sharedCopy = ShmImg.copyOf(someOtherImg);
+// See also net.imglib2.util.ImgUtil.copy(srcImg, destImg)
 ```
 
 </div>
 
-</div>
+</v-click>
 
 ---
 layout: center
@@ -230,6 +329,12 @@ layout: center
 
 # Demo 1: SAMJ
 
+<div style="position: absolute; right: 3rem; margin-top: -10rem; z-index: 1">
+
+<img src="/deepimagej_logo.png" style="width: 16rem">
+
+</div>
+
 One-click live segmentation
 
 - Segment Anything Model integration
@@ -238,11 +343,19 @@ One-click live segmentation
 
 https://github.com/segment-anything-models-java/SAMJ-IJ
 
+*Help › Update... › Manage Update Sites › SAMJ*
+
 ---
 layout: center
 ---
 
 # Demo 2: TrackMate
+
+<div style="position: absolute; right: 2rem; margin-top: -10rem; z-index: 1">
+
+<img src="/trackmate-logo.png" style="width: 16rem">
+
+</div>
 
 Deep learning spot detectors
 
@@ -250,7 +363,9 @@ Deep learning spot detectors
 - Python-based detection in Java application
 - Real-time particle tracking
 
-https://github.com/trackmate-sc/TrackMate/tree/v9-appose
+https://github.com/trackmate-sc/TrackMate/tree/v9-appose  
+
+Run `fiji/plugin/trackmate/TrackMatePlugIn.java` in IDE
 
 ---
 layout: center
@@ -258,13 +373,21 @@ layout: center
 
 # Demo 3: Mastodon
 
+<div style="position: absolute; right: 2rem; margin-top: -10rem; z-index: 1">
+
+<img src="/mastodon-logo.png" style="width: 12rem">
+
+</div>
+
 Large-scale tracking capabilities
 
 - Cell detection and tracking with Python deep learning models
 - Powered by Appose + Cellpose3 + TrackAstra
-- Proof-of-concept stage
+- Proof-of-concept stage: best to use Linux
 
 https://github.com/mastodon-sc/mastodon-deep-lineage/
+
+*Help › Update... › Manage Update Sites › Mastodon* + *Mastodon-DeepLineage*
 
 ---
 layout: default
@@ -295,14 +418,40 @@ layout: default
 
 Install the required Python environments via Appose
 
-**Menu:** `Plugins > Tracking > Python environments for detectors/linkers`
+**Menu:** `Plugins › Tracking › Python environments for detectors/linkers`
 
 <v-clicks>
 
 - **Update/Install cellpose3** - Cell segmentation model
 - **Update/Install trackastra** - Deep learning-based tracking
 
-These environments are built and managed by Appose using pixi!
+<div>
+
+<div style="position: absolute; left: 4rem; margin-top: 1em; z-index: 1">
+
+<img src="/sad-mac.webp" style="width:12rem">
+
+</div>
+
+<div style="margin-left: 14rem">
+
+```
+error    libmamba Could not solve for environment specs
+    The following packages are incompatible
+    └─ pytorch-cuda =* * is not installable because there are no viable options
+       ├─ pytorch-cuda 11.6 would require
+       │  └─ cuda =11.6 *, which does not exist (perhaps a missing channel);
+       ├─ pytorch-cuda 11.7 would require
+       │  └─ cuda =11.7 *, which does not exist (perhaps a missing channel);
+       └─ pytorch-cuda 11.8 would require
+          └─ cuda =11.8 *, which does not exist (perhaps a missing channel).
+critical libmamba Could not solve for environment specs
+[ERROR] Installation failed for cellpose3
+```
+
+</div>
+
+</div>
 
 </v-clicks>
 
@@ -312,7 +461,7 @@ layout: default
 
 # Mastodon Demo: Detection with Cellpose3
 
-**Menu:** `Plugins > Tracking > Detection > Cellpose3`
+**Menu:** `Plugins › Tracking › Detection › Cellpose3`
 
 <v-click>
 
@@ -338,7 +487,7 @@ layout: default
 
 # Mastodon Demo: Linking with TrackAstra
 
-**Menu:** `Plugins > Tracking > Linking > TrackAstra`
+**Menu:** `Plugins › Tracking › Linking › TrackAstra`
 
 <v-click>
 
