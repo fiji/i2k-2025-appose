@@ -659,7 +659,7 @@ unzip UNSEG/image.zip
 
 <v-click>
 
-**🎯 Checkpoint:** `git commit -m 'Add unseg script' unseg.py`
+**🎯 Checkpoint:** `git add unseg.py && git commit -m 'Add unseg script'`
 
 </v-click>
 
@@ -685,7 +685,7 @@ Extract code from the Jupyter notebook into a Python script:
 
 <v-click>
 
-**🎯 Checkpoint:** `git commit -m 'Add test script' run.py`
+**🎯 Checkpoint:** `git add run.py && git commit -m 'Add test script'`
 
 </v-click>
 
@@ -817,7 +817,7 @@ pixi run python unseg.py
 
 <v-click>
 
-**🎯 Checkpoint:** `git rm -f run.py; git commit -m 'Unify all code into one script' unseg.py`
+**🎯 Checkpoint:** `git rm -f run.py && git commit -a -m 'Unify all code into one script'`
 
 </v-click>
 
@@ -994,7 +994,7 @@ Save the script as `Unseg_Fiji.groovy`
 
 <v-click>
 
-**🎯 Checkpoint:** `git add Unseg_Fiji.groovy; git commit -m 'Start writing the Groovy script'`
+**🎯 Checkpoint:** `git add Unseg_Fiji.groovy && git commit -m 'Start writing the Groovy script'`
 
 </v-click>
 
@@ -1068,7 +1068,7 @@ imgToAppose = { img ->
 
 For wrapping an Appose `NDArray` as ImgLib2 `Img`:
 ```groovy
-import net.imglib2.appose.NDArray
+import net.imglib2.appose.NDArrays
 apposeToImg = { ndarray ->
     NDArrays.asArrayImg(ndarray)
 }
