@@ -30,7 +30,8 @@ Curtis Rueden @ UW-Madison LOCI
 
 <div class="pt-12 text-sm opacity-75">
 
-**SLIDES:** `https://fiji.github.io/i2k-2025-appose/`
+**SLIDES:** `https://fiji.github.io/i2k-2025-appose/`  
+**VIDEO:** https://youtu.be/9Rf4ynSDozc
 
 </div>
 ---
